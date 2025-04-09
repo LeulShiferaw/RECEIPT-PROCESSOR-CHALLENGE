@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"unicode"
 
 	"github.com/gorilla/mux"
 )
@@ -98,5 +99,13 @@ func getPointsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func calcPoints(receipt Receipt) float64 {
-	return 0.0
+	var points float64
+	for _, char := range receipt.Retailer {
+		if unicode.IsLetter(char) || unicode.IsDigit(char) {
+			points++
+		}
+	}
+
+	fmt.Printf("Added %f at the start\n", points)
+	return points
 }
