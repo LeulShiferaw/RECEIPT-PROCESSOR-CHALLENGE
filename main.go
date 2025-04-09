@@ -1,12 +1,29 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
 )
+
+var badRequest = "Please verify input."
+var notFound = "No receipt found for that ID."
+
+type Item struct {
+	ShortDescription string `json:"shortDescription"`
+	Price            string `json:"price"`
+}
+
+type Receipt struct {
+	Retailer     string `json:"retailer"`
+	PurchaseDate string `json:"purchaseDate"`
+	PurchaseTime string `json:"purchaseTime"`
+	Total        string `json:"total"`
+	Items        []Item `json:"items"`
+}
 
 func main() {
 	r := mux.NewRouter()
@@ -25,8 +42,14 @@ func defaultHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func processReceiptHandler(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Hello World!"))
+	var receipt Receipt
+	err := json.NewDecoder(r.Body).Decode(&receipt)
+	if err != nil {
+		http.Error(w, badRequest, http.StatusBadRequest)
+		return
+	}
+
+	fmt.Printf("Received receipt: %+v\n", receipt) //For Debugging purposes
 }
 
 func getPointsHandler(w http.ResponseWriter, r *http.Request) {
