@@ -5,12 +5,17 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/gorilla/mux"
 )
 
 var badRequest = "Please verify input."
 var notFound = "No receipt found for that ID."
+
+var idCounter int
+
+var memory = make(map[string]Receipt)
 
 type Item struct {
 	ShortDescription string `json:"shortDescription"`
@@ -23,6 +28,11 @@ type Receipt struct {
 	PurchaseTime string `json:"purchaseTime"`
 	Total        string `json:"total"`
 	Items        []Item `json:"items"`
+}
+
+func generateID() int {
+	idCounter++
+	return idCounter
 }
 
 func main() {
@@ -50,6 +60,13 @@ func processReceiptHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Printf("Received receipt: %+v\n", receipt) //For Debugging purposes
+	id := strconv.Itoa(generateID())               //Create new Id
+	memory[id] = receipt                           //Insert to memory
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+
+	json.NewEncoder(w).Encode(map[string]string{"id": id})
 }
 
 func getPointsHandler(w http.ResponseWriter, r *http.Request) {
