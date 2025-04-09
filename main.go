@@ -70,6 +70,33 @@ func processReceiptHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func getPointsHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["id"]
+
+	fmt.Printf("Calculating for ID: %s\n", id)
+
+	receipt, found := memory[id]
+	if !found {
+		http.Error(w, notFound, http.StatusNotFound)
+		return
+	}
+
+	fmt.Printf("Calculating for receipt: %+v\n", receipt)
+
+	points := calcPoints(receipt)
+	fmt.Printf("Points calculated: %f\n", points)
+
+	if points < 0 {
+		http.Error(w, badRequest, http.StatusBadRequest)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Hello World!"))
+
+	json.NewEncoder(w).Encode(map[string]int{"points": int(points)})
+}
+
+func calcPoints(receipt Receipt) float64 {
+	return 0.0
 }
