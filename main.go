@@ -98,6 +98,10 @@ func getPointsHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(map[string]int{"points": int(points)})
 }
 
+func isInteger(f float64) bool {
+	return float64(int64(f)) == f
+}
+
 func calcPoints(receipt Receipt) float64 {
 	var points float64
 	for _, char := range receipt.Retailer {
@@ -107,5 +111,21 @@ func calcPoints(receipt Receipt) float64 {
 	}
 
 	fmt.Printf("Added %f at the start\n", points)
+
+	total, err := strconv.ParseFloat(receipt.Total, 64)
+	if err != nil {
+		fmt.Println("Error with parsing total!")
+		return -1.0
+	}
+
+	if isInteger(total) {
+		fmt.Println("Added 50 for round dollar total")
+		points += 50
+	}
+
+	if isInteger(total * 4) {
+		fmt.Println("Added 25 for multiple of 4 integer")
+		points += 25
+	}
 	return points
 }
