@@ -4,8 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"math"
 	"net/http"
 	"strconv"
+	"strings"
 	"unicode"
 
 	"github.com/gorilla/mux"
@@ -126,6 +128,41 @@ func calcPoints(receipt Receipt) float64 {
 	if isInteger(total * 4) {
 		fmt.Println("Added 25 for multiple of 4 integer")
 		points += 25
+	}
+
+	fmt.Printf("Adding %f points based on length of items\n", 5*float64(int64(len(receipt.Items)/2)))
+	points += 5 * float64(int64(len(receipt.Items)/2))
+
+	for _, item := range receipt.Items {
+		trimmedItem := strings.TrimSpace(item.ShortDescription)
+		if len(trimmedItem)%3 == 0 {
+			price, err := strconv.ParseFloat(item.Price, 64)
+			if err != nil {
+				fmt.Println("Error with parsing price!")
+				return -6.0
+			}
+			fmt.Printf("Added %f for item: %s\n", math.Ceil(price*0.2), trimmedItem)
+			points += math.Ceil(price * 0.2)
+		}
+	}
+
+	if total > 10 {
+		fmt.Println("Added 5 for AI help")
+		points += 5
+	}
+
+	date := strings.Split(receipt.PurchaseDate, "-")
+	if len(date) >= 3 {
+		day, err := strconv.Atoi(date[2])
+		if err != nil {
+			fmt.Println("Error with purchaseDate!")
+			return -2.0
+		}
+
+		if (day % 2) != 0 {
+			fmt.Println("Added 6 for odd day")
+			points += 6
+		}
 	}
 	return points
 }
