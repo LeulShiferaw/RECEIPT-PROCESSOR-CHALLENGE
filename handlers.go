@@ -11,7 +11,7 @@ import (
 
 func defaultHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Fetch rewards rocks!"))
+	w.Write([]byte("Fetch rewards rocks!\nUsage:\n1. /receipts/process as POST with json data to get id\n2. /receipts/{id}/points to get the points associated with id"))
 }
 
 func processReceiptHandler(w http.ResponseWriter, r *http.Request) {
