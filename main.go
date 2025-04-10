@@ -15,8 +15,9 @@ import (
 	   as go is not my main language.
 	   For that reason, I decided to include the AI parts as well.
 	   This includes the points part and the error message in api.yml.
-	2. To run, make sure to 'go install github.com/gorilla/mux' and go get it afterwards
+	2. To run, make sure to 'go install github.com/gorilla/mux' and 'go get github.com/gorilla/mux' afterwards
 	3. Then just run go run *.go
+	4. Feel free uncomment the fmt prints for debugging purposes (it helps to see what has been added exactly)
 */
 
 // Constants for error message
