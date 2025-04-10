@@ -4,4 +4,4 @@ My Solution to receipt processor challenge for fetch rewards
 ## Steps to run  
 1. go install github.com/gorilla/mux  
 2. go get github.com/gorilla/mux
-3. go run *.go
+3. go run main.go handlers.go points.go 
