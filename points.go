@@ -33,13 +33,13 @@ func calcPoints(receipt Receipt) float64 {
 
 	//Check if total is a round dollar amount
 	if isInteger(total) {
-		fmt.Println("Added 50 for round dollar total")
+		//fmt.Println("Added 50 for round dollar total")
 		points += 50
 	}
 
 	//Check if total is multiple of 0.25
 	if isInteger(total * 4) {
-		fmt.Println("Added 25 for multiple of 4 integer")
+		//fmt.Println("Added 25 for multiple of 4 integer")
 		points += 25
 	}
 
