@@ -22,7 +22,7 @@ func calcPoints(receipt Receipt) float64 {
 		}
 	}
 
-	fmt.Printf("Added %f at the start\n", points) //Debugging help
+	//fmt.Printf("Added %f at the start\n", points) //Debugging help
 
 	//Get total from string
 	total, err := strconv.ParseFloat(receipt.Total, 64)
@@ -43,7 +43,7 @@ func calcPoints(receipt Receipt) float64 {
 		points += 25
 	}
 
-	fmt.Printf("Adding %f points based on length of items\n", 5*float64(int64(len(receipt.Items)/2)))
+	//fmt.Printf("Adding %f points based on length of items\n", 5*float64(int64(len(receipt.Items)/2)))
 	points += 5 * float64(int64(len(receipt.Items)/2)) //5 points for every two items
 
 	//Add ceil(price*0.2) for descriptions that have trimmed length of multiple 3
@@ -55,14 +55,14 @@ func calcPoints(receipt Receipt) float64 {
 				fmt.Println("Error with parsing price!")
 				return -6.0
 			}
-			fmt.Printf("Added %f for item: %s\n", math.Ceil(price*0.2), trimmedItem)
+			//fmt.Printf("Added %f for item: %s\n", math.Ceil(price*0.2), trimmedItem)
 			points += math.Ceil(price * 0.2)
 		}
 	}
 
 	//AI help
 	if total > 10 {
-		fmt.Println("Added 5 for AI help")
+		//fmt.Println("Added 5 for AI help")
 		points += 5
 	}
 
@@ -76,7 +76,7 @@ func calcPoints(receipt Receipt) float64 {
 		}
 
 		if (day % 2) != 0 {
-			fmt.Println("Added 6 for odd day")
+			//fmt.Println("Added 6 for odd day")
 			points += 6
 		}
 	}
@@ -102,7 +102,7 @@ func calcPoints(receipt Receipt) float64 {
 
 	//Check if 24 hour format is between 2:00pm and 4:00pm
 	if ((hour > 14) || (hour == 14 && min > 0)) && (hour < 16) {
-		fmt.Println("Added 10 for hour between 2pm and 4pm")
+		//fmt.Println("Added 10 for hour between 2pm and 4pm")
 		points += 10
 	}
 
