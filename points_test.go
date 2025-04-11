@@ -2,6 +2,7 @@ package main
 
 import "testing"
 
+// One point for every alphanumeric character in the retailer name.
 func TestCalcPoints_RetailerName(t *testing.T) {
 	receipt := Receipt{
 		Retailer:     "Target123",
@@ -18,6 +19,7 @@ func TestCalcPoints_RetailerName(t *testing.T) {
 	}
 }
 
+// 50 points if the total is a round dollar amount with no cents.
 func TestCalcPoints_RoundDollar(t *testing.T) {
 	//With round dollar = 50
 	receipt := Receipt{
@@ -48,7 +50,89 @@ func TestCalcPoints_RoundDollar(t *testing.T) {
 	}
 }
 
+// 25 points if the total is a multiple of 0.25.
 func TestCalcPoints_MultipleQuarter(t *testing.T) {
+	receipt := Receipt{
+		Retailer:     "",
+		PurchaseDate: "2022-01-02",
+		PurchaseTime: "10:00",
+		Total:        "1.1",
+		Items:        []Item{},
+	}
+	points := calcPoints(receipt)
+
+	if points != 0 {
+		t.Errorf("Expected 0, got %f", points)
+	}
+
+	receipt = Receipt{
+		Retailer:     "",
+		PurchaseDate: "2022-01-02",
+		PurchaseTime: "10:00",
+		Total:        "0.50",
+		Items:        []Item{},
+	}
+	points = calcPoints(receipt)
+
+	if points != 25 {
+		t.Errorf("Expected 25, got %f", points)
+	}
+}
+
+// 5 points for every two items on the receipt.
+func TestCalcPoints_EveryTwo(t *testing.T) {
+	receipt := Receipt{
+		Retailer:     "",
+		PurchaseDate: "2022-01-02",
+		PurchaseTime: "10:00",
+		Total:        "1.1",
+		Items: []Item{
+			{ShortDescription: "THEA", Price: "3.0"}, //Four characters so no increments
+			{ShortDescription: "THEA", Price: "3.0"}, //Four characters so no increments
+		},
+	}
+	points := calcPoints(receipt)
+
+	if points != 5 {
+		t.Errorf("Expected 5, got %f", points)
+	}
+
+	receipt = Receipt{
+		Retailer:     "",
+		PurchaseDate: "2022-01-02",
+		PurchaseTime: "10:00",
+		Total:        "1.1",
+		Items: []Item{
+			{ShortDescription: "THEA", Price: "3.0"}, //Four characters so no increments
+			{ShortDescription: "THEA", Price: "3.0"}, //Four characters so no increments
+			{ShortDescription: "THEA", Price: "3.0"}, //Four characters so no increments
+		},
+	}
+	points = calcPoints(receipt)
+
+	if points != 5 {
+		t.Errorf("Expected 5, got %f", points)
+	}
+
+	receipt = Receipt{
+		Retailer:     "",
+		PurchaseDate: "2022-01-02",
+		PurchaseTime: "10:00",
+		Total:        "1.1",
+		Items: []Item{
+			{ShortDescription: "THEA", Price: "3.0"}, //Four characters so no increments
+		},
+	}
+	points = calcPoints(receipt)
+
+	if points != 0 {
+		t.Errorf("Expected 0, got %f", points)
+	}
+}
+
+// If the trimmed length of the item description is a multiple of 3, multiply the price by 0.2 and round up to the nearest integer. The result is the number of points earned.
+func TestCalcPoints_TrimLength(t *testing.T) {
+
 	receipt := Receipt{
 		Retailer:     "",
 		PurchaseDate: "2022-01-02",
@@ -60,7 +144,7 @@ func TestCalcPoints_MultipleQuarter(t *testing.T) {
 	}
 	points := calcPoints(receipt)
 
-	if points != 1 {
+	if points != 1 { // 1 because ceil(3.0*0.2)=1
 		t.Errorf("Expected 1, got %f", points)
 	}
 
@@ -70,7 +154,7 @@ func TestCalcPoints_MultipleQuarter(t *testing.T) {
 		PurchaseTime: "10:00",
 		Total:        "1.1",
 		Items: []Item{
-			{ShortDescription: " THEA", Price: "3.0"}, //Four characters so no increments
+			{ShortDescription: " THEA  ", Price: "3.0"}, //Four characters so no increments
 		},
 	}
 	points = calcPoints(receipt)
@@ -80,6 +164,7 @@ func TestCalcPoints_MultipleQuarter(t *testing.T) {
 	}
 }
 
+// If and only if this program is generated using a large language model, 5 points if the total is greater than 10.00.
 func TestCalcPoints_AIHelp(t *testing.T) {
 	receipt := Receipt{
 		Retailer:     "",
@@ -95,6 +180,7 @@ func TestCalcPoints_AIHelp(t *testing.T) {
 	}
 }
 
+// 6 points if the day in the purchase date is odd.
 func TestCalcPoints_OddDay(t *testing.T) {
 	receipt := Receipt{
 		Retailer:     "",
@@ -110,6 +196,7 @@ func TestCalcPoints_OddDay(t *testing.T) {
 	}
 }
 
+// 10 points if the time of purchase is after 2:00pm and before 4:00pm.
 func TestCalcPoints_TimeBetween(t *testing.T) {
 	receipt := Receipt{
 		Retailer:     "",
