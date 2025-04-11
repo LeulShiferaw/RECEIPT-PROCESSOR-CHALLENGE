@@ -33,6 +33,7 @@ func processReceiptHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(map[string]string{"id": id})
 }
 
+// GET handler for getting points for id
 func getPointsHandler(w http.ResponseWriter, r *http.Request) {
 	//Get id
 	vars := mux.Vars(r)
