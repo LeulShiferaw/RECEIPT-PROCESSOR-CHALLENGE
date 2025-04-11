@@ -8,11 +8,13 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// Initial page that is not required
 func defaultHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("Fetch rewards rocks!\nUsage:\n1. /receipts/process as POST with json data to get id\n2. /receipts/{id}/points to get the points associated with id"))
 }
 
+// The POST api endpoint for initial processing
 func processReceiptHandler(w http.ResponseWriter, r *http.Request) {
 	var receipt Receipt
 	err := json.NewDecoder(r.Body).Decode(&receipt)

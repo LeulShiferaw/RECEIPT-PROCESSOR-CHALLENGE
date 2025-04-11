@@ -16,7 +16,7 @@ import (
 	   For that reason, I decided to include the AI parts as well.
 	   This includes the extra points for using AI and the error message in api.yml.
 	2. To run, make sure to 'go install github.com/gorilla/mux' and 'go get github.com/gorilla/mux' afterwards
-	3. Then just run go run *.go
+	3. Then just run go run main.go handlers.go points.go
 	4. Feel free uncomment the fmt prints for debugging purposes (it helps to see what has been added exactly)
 */
 
